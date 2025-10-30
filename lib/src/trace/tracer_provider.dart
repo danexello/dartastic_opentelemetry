@@ -82,8 +82,8 @@ class TracerProvider implements APITracerProvider {
     }
 
     if (!isShutdown) {
-      // Shutdown all span processors
-      for (final processor in _spanProcessors) {
+      // Shutdown all span processors - iterate over copy to avoid concurrent modification
+      for (final processor in _spanProcessors.toList()) {
         if (OTelLog.isDebug()) {
           OTelLog.debug(
               'TracerProvider: Shutting down processor ${processor.runtimeType}');
@@ -261,7 +261,8 @@ class TracerProvider implements APITracerProvider {
       return;
     }
 
-    for (var processor in _spanProcessors) {
+    // Iterate over copy to avoid concurrent modification
+    for (var processor in _spanProcessors.toList()) {
       try {
         if (OTelLog.isDebug()) {
           OTelLog.debug(
